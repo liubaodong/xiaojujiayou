@@ -1,16 +1,16 @@
 <template>
   <div class="x-header">
     <slot>
-      <slot name="back"></slot>
-      <slot name="title"></slot>
-      <slot name="next"></slot>
+      <slot name="back" />
+      <slot name="title" />
+      <slot name="next" />
     </slot>
   </div>
 </template>
 
 <script>
 export default {
-  name: "x-header",
+  name: "XHeader",
   components: {},
   props: {},
   data() {
@@ -20,7 +20,7 @@ export default {
   watch: {},
   created() {},
   mounted() {},
-  methods: {},
+  methods: {}
 };
 </script>
 <style lang="scss" scoped>
@@ -29,5 +29,5 @@ export default {
     text-align: center;
     font-size: 16px;
     border-bottom: 1px solid #eee;
-} 
+}
 </style>

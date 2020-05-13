@@ -10,14 +10,12 @@ import Vant from 'vant';
 import 'vant/lib/index.css';
 import 'vant/lib/index.less';
 Vue.use(Vant);
-import { Dialog } from 'vant';
 
-Vue.use(Dialog);
 import '@/assets/svgIcon'// svg图标
 import '@/utils'
 import instance from '@/utils/request'
 import axios from 'axios'
-import wx from "weixin-jsapi";
+import wx from 'weixin-jsapi'
 Vue.prototype.$request = instance
 Vue.prototype.$axios = axios
 Vue.prototype.$wx = wx
