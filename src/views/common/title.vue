@@ -1,13 +1,12 @@
 <template>
   <div>
-    <router-link to="/orange-list">小桔加油</router-link>
+    -
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'Home',
+  name: 'Title',
   components: {
 
   },
@@ -32,11 +31,7 @@ export default {
 
   },
   methods: {
-    // 获取地理位置
 
-    getLocation(){
-
-    }
   }
 }
 </script>

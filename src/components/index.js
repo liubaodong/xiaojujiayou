@@ -12,6 +12,6 @@ requireComponents.keys().forEach(fileName => {
   // 组件挂载
   Vue.component(reqComName, reqCom.default || reqCom)
   // 打印结果
-//console.log(reqComName,reqCom.default,reqCom)
+// console.log(reqComName,reqCom.default,reqCom)
 })
 export default requireComponents

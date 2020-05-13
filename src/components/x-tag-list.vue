@@ -1,13 +1,11 @@
 <template>
-  <div>
-    <router-link to="/orange-list">小桔加油</router-link>
-  </div>
+  <div />
+
 </template>
 
 <script>
-
 export default {
-  name: 'Home',
+  name: 'XTagList',
   components: {
 
   },
@@ -16,7 +14,7 @@ export default {
   },
   data(){
     return {
-
+      active: 2
     }
   },
   computed: {
@@ -32,11 +30,7 @@ export default {
 
   },
   methods: {
-    // 获取地理位置
 
-    getLocation(){
-
-    }
   }
 }
 </script>

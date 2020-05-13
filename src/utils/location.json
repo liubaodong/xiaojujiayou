@@ -1,0 +1,12 @@
+{
+      "status": "success",
+      "object": {
+          "signature": "d561e7981e7c560e7b9b47c0855c2df109b8136e",
+          "appId": "wx895cf999ac7f450c",
+          "jsapi_ticket": "sM4AOVdWfPE4DxkXGEs8VJ1rhRQ5nd03vZPQcfQKuplvArs_0EFRsePVGLQwFBOI7YK9c859Z5KoLCsMwGrPHQ",
+          "url": "http://0ecea743.ngrok.io//template/index.html",
+          "nonceStr": "800ff3fc-e674-4e5d-954d-c1096c4785ed",
+          "timestamp": "1589119889"
+      },
+      "metas": null
+  }
