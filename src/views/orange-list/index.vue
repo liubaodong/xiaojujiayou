@@ -123,9 +123,10 @@ export default {
   watch: {},
   created() {
     this.getPositionParams();
-    this.getlist();
   },
-  mounted() {},
+  mounted() {
+
+  },
   methods: {
     // 返回
     goBack() {
@@ -160,13 +161,17 @@ export default {
 
     // 获取地理位置参数
     getPositionParams() {
+      let url = window.location.href
+      url = url.replace('http://localhost:8081', 'http://xiaoju.yahewo.com')
+
       this.$request({ url: "/user/getWxConfigInfo", params: {
-        url: this.$route.path
+        url: url
       }}).then(({ object }) => {
         // console.log("obj", object);
         this.getLocation(object);
       });
-      console.log('router', this.$route)
+
+      console.log('router', url)
     },
     // 详情跳转
     goDetail(url) {
@@ -221,6 +226,9 @@ export default {
         // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
         alert("验证出错");
       });
+      setTimeout(() => {
+        this.getlist();
+      }, 100)
     },
     // 获取数据列表
     getlist() {
