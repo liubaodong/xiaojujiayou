@@ -138,10 +138,10 @@ export default {
           this.list = [];
           this.refreshing = false;
         }
-        console.log('page', this.params.page, this.list.length)
         this.getlist()
         this.loading = false;
-        this.finished = !!this.list.length % 10
+
+        this.finished = this.list.length % 10 !== 0
       }, 1000);
     },
     onRefresh() {
@@ -160,10 +160,13 @@ export default {
 
     // 获取地理位置参数
     getPositionParams() {
-      this.$request({ url: "/user/getWxConfigInfo" }).then(({ object }) => {
+      this.$request({ url: "/user/getWxConfigInfo", params: {
+        url: this.$route.path
+      }}).then(({ object }) => {
         // console.log("obj", object);
         this.getLocation(object);
       });
+      console.log('router', this.$route)
     },
     // 详情跳转
     goDetail(url) {
