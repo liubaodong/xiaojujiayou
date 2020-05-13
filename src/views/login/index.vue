@@ -28,7 +28,8 @@ export default {
   },
   data(){
     return {
-      phone: 13888888888
+      phone: 13888888888,
+      openId: ''
     }
   },
   computed: {
@@ -38,7 +39,8 @@ export default {
 
   },
   created(){
-
+    this.openId = this.$router.query.openid
+    this.$store.commit(this.openId)
   },
   mounted(){
 
