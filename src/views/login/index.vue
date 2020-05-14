@@ -39,8 +39,10 @@ export default {
 
   },
   created(){
-    this.openId = this.$router.query.openid
-    this.$store.commit(this.openId)
+    if(this.$router.query.openid){
+      this.openId = this.$router.query.openid
+      this.$store.commit(this.openId)
+    }
   },
   mounted(){
 

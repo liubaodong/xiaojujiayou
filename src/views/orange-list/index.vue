@@ -167,7 +167,7 @@ export default {
       this.$request({ url: "/user/getWxConfigInfo", params: {
         url: url
       }}).then(({ object }) => {
-        // console.log("obj", object);
+        console.log("obj", object);
         this.getLocation(object);
       });
 
@@ -187,15 +187,13 @@ export default {
         timestamp: object.timestamp, // 必填，生成签名的时间戳
         nonceStr: object.nonceStr, // 必填，生成签名的随机串
         signature: object.signature, // 必填，签名
-        jsApiList: ["getLocation"] // 必填，需要使用的JS接口列表
+        jsApiList: ['checkJsApi', 'openLocation', 'getLocation'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
       });
       wx.checkJsApi({
-        jsApiList: ["getLocation"], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+        jsApiList: ['getLocation'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
         success: function(res) {
           if (res.checkResult.getLocation === false) {
-            alert(
-              "你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！"
-            );
+            alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
             return;
           }
         }
@@ -204,7 +202,7 @@ export default {
       var longitude;
       var speed;
       var accuracy;
-      wx.ready(function() {
+      wx.ready(function(){
         // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
         wx.getLocation({
           success: function(res) {
@@ -217,15 +215,15 @@ export default {
             _this.getlist({ lat: latitude, lng: longitude });
           },
           cancel: function(res) {
-            alert("未能获取地理位置");
+            alert('未能获取地理位置');
           }
         });
       });
-
       wx.error(function(res) {
         // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
         alert("验证出错");
       });
+
       setTimeout(() => {
         this.getlist();
       }, 100)
@@ -270,3 +268,4 @@ export default {
   display: inline-block;
 }
 </style>
+
