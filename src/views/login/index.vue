@@ -8,7 +8,10 @@
         name="phone"
         maxlength="11"
         placeholder="请输入手机号"
-        :rules="[{ required: true, message: '手机号必填' }]"
+        :rules="[
+          { required: true, message: '手机号必填' },
+          { pattern: /^1[3456789]\d{9}$/,message: '手机号不正确' },
+        ]"
       />
       <div style="margin: 16px;">
         <van-button
@@ -39,16 +42,23 @@ export default {
   computed: {},
   watch: {},
   created() {
-    if (this.$router.query && this.$router.query.openid) {
-      this.openId = this.$router.query.openid;
-      this.$store.commit(this.openId);
+    if (this.$route.query && this.$route.query.openid) {
+      this.openId = this.$route.query.openid;
+      console.log('openid', this.openId)
     }
   },
   mounted() {},
   methods: {
     onSubmit(values) {
       console.log("submit", values);
-      this.$router.replace({ path: "/orange-list" });
+      this.$store.commit('getParams', { openid: this.$route.query.openid || 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk', phone: values.phone });
+      this.$request({ url: `/user/bindPhone`, params: {
+        openid: this.$route.query.openid || 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk',
+        phone: values.phone
+      }})
+        .then(({ success }) => {
+          this.$router.replace({ path: "/orange-list" });
+        })
     }
   }
 };

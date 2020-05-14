@@ -86,6 +86,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: "OrangeListIndex",
   components: {},
@@ -115,10 +116,13 @@ export default {
       ]
     };
   },
-  computed: {},
+  computed: {
+
+  },
   watch: {},
   created() {},
   mounted() {
+    console.log('params', this.$store.state.params.openid)
     this.getPositionParams();
   },
   methods: {
@@ -228,9 +232,9 @@ export default {
       }, 100);
     },
     // 获取数据列表
-    getlist() {
+    getlist({ lat, lng }) {
       this.$request({
-        url: `/store/storeList?lng=120.457587&lat=36.119269&orderBy=distance&openid=ASD123456&oilNum=${this.params.oilNum}&page=${this.params.page}`
+        url: `/store/storeList?lng=${lng}&lat=${lat}&orderBy=distance&openid=${this.$store.state.params.openid}&oilNum=${this.params.oilNum}&page=${this.params.page}`
       }).then((data) => {
         if(data.success === true){
           this.list.push(...data.object);

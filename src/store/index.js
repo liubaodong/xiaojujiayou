@@ -4,12 +4,15 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  namespaced: true,
   state: {
-    openId: ''
+    openId: '',
+    params: {}
   },
   mutations: {
-    getOpenId(state, payload){
-      state.openId = payload
+    getParams(state, payload){
+      Object.assign(state.params, payload)
+      console.log('state', state.params)
     }
   },
   actions: {
@@ -17,6 +20,6 @@ export default new Vuex.Store({
   modules: {
   },
   getters: {
-    OPEN_ID: state => state.openId
+    PARAMS: state => state.params
   }
 })
