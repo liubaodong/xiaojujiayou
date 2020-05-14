@@ -56,10 +56,8 @@ export default {
         openid: this.$route.query.openid || 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk',
         phone: values.phone
       }})
-        .then(({ success }) => {
-          if(success){
-            this.$router.replace({ path: "/orange-list" });
-          }
+        .then(data => {
+          this.$router.replace({ path: "/orange-list" });
         })
     }
   }
