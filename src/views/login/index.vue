@@ -57,7 +57,9 @@ export default {
         phone: values.phone
       }})
         .then(({ success }) => {
-          this.$router.replace({ path: "/orange-list" });
+          if(success){
+            this.$router.replace({ path: "/orange-list" });
+          }
         })
     }
   }

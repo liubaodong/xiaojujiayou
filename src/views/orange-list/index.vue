@@ -236,6 +236,7 @@ export default {
       this.$request({
         url: `/store/storeList?lng=${lng}&lat=${lat}&orderBy=distance&openid=${this.$store.state.params.openid}&oilNum=${this.params.oilNum}&page=${this.params.page}`
       }).then((data) => {
+        console.log('data-----------', data)
         if(data.success === true){
           this.list.push(...data.object);
         }
