@@ -4,10 +4,7 @@
       <van-row type="flex" align="center" justify="center">
         <van-col
           span="1"
-        ><van-icon
-          name="arrow-left"
-          @click="goBack"
-        /></van-col>
+        />
         <van-col span="23">全国加油优惠</van-col>
       </van-row>
     </x-header>
@@ -51,35 +48,36 @@
                   class="tit"
                   span="14"
                 >￥
-                  <strong class="money">{{ item.vipPrice }}</strong>
-                  /升/92#</van-col>
-                <van-col span="10" class="sub_tit">距您 2.7km</van-col>
+                  <strong class="money">{{ item.vipPrice /100 }}</strong>
+                  /升/{{ params.oilNum }}#</van-col>
+                <van-col span="10" class="sub_tit">
+                  距您 {{ (item.distance / 1000).toFixed(2) }}  km
+                </van-col>
               </van-row>
-              <van-row>
-                <span class="tag">
-                  <svg-icon icon-class="down" />
+              <van-row style="margin-top:6px">
+                <van-tag class="tag">
+                  <svg-icon icon-class="down" style="width:20px" />
                   <van-tag
                     plain
                     style="font-size:12px"
                     type="danger"
-                  >已将0.49</van-tag>
-                </span>
+                  >已降{{ (item.cityPrice-item.vipPrice)/100 }}</van-tag>
+                </van-tag>
               </van-row>
             </van-col>
           </van-row>
-          <van-row type="flex" align="center" justify="space-between">
-            <van-col>
-              <van-row type="flex" align="center">
-                <svg-icon icon-class="position" />
-                <!-- <van-icon class="icon" name="location-o" /> -->
-                <van-col>
-                  {{ item.storeCityName }}
-                </van-col>
-              </van-row>
+
+          <van-row type="flex" align="center">
+            <van-col style="flex:1" class="text-ell">
+              <svg-icon icon-class="position" />
+              {{ item.storeAddress }}
             </van-col>
-            <van-col><van-button round class="button" type="primary" size="small">
-              <svg-icon icon-class="location" />
-              导航</van-button></van-col>
+            <van-col span="5">
+              <van-button round class="button" type="primary" size="small" @click="goLocation(item.jumpUrl)">
+                <svg-icon icon-class="location" />
+                导航
+              </van-button>
+            </van-col>
           </van-row>
         </van-cell>
       </van-list>
@@ -88,7 +86,6 @@
 </template>
 
 <script>
-import { list } from "../../utils/data";
 export default {
   name: "OrangeListIndex",
   components: {},
@@ -96,40 +93,40 @@ export default {
   data() {
     return {
       params: {
-        page: 1
+        page: 1,
+        oilNum: 92
       },
       loading: false,
       finished: false,
       refreshing: false,
-      list,
+      list: [],
       location: "",
 
       value1: 0,
-      value2: "a",
+      value2: "92",
       option1: [
-        { text: "全部商品", value: 0 },
-        { text: "新款商品", value: 1 },
-        { text: "活动商品", value: 2 }
+        { text: "距离最近", value: 0 }
       ],
       option2: [
-        { text: "92号油", value: "a" },
-        { text: "95号油", value: "b" },
-        { text: "0号油", value: "c" },
-        { text: "98号油", value: "d" }
+        { text: "92号油", value: "92" },
+        { text: "95号油", value: "95" },
+        { text: "0号油", value: "0" },
+        { text: "98号油", value: "98" }
       ]
     };
   },
   computed: {},
   watch: {},
-  created() {
-  },
+  created() {},
   mounted() {
     this.getPositionParams();
   },
   methods: {
-    // 返回
-    goBack() {
-      history.back();
+    // 导航
+    goLocation(url){
+      if(url){
+        window.location.href = url
+      }
     },
     onLoad() {
       setTimeout(() => {
@@ -138,10 +135,10 @@ export default {
           this.list = [];
           this.refreshing = false;
         }
-        this.getlist()
+        this.getlist();
         this.loading = false;
 
-        this.finished = this.list.length % 10 !== 0
+        this.finished = this.list.length % 10 !== 0 || !this.list.length
       }, 1000);
     },
     onRefresh() {
@@ -155,22 +152,23 @@ export default {
     },
     // 下拉选择
     changeSelect(e) {
-      console.log("e", e);
+      this.list = []
+      this.params.page = 1
+      this.params.oilNum = e
+      this.getlist()
     },
 
     // 获取地理位置参数
     getPositionParams() {
-      // let url = window.location.href
-      //  url = url.replace('http://localhost:8081', 'http://xiaoju.yahewo.com')
-      const url = window.location.href.split('#')[0] + '/api'
-      this.$request({ url: "/user/getWxConfigInfo", params: {
-        url: url
-      }}).then(({ object }) => {
-        console.log("obj", object);
+      const url = window.location.href.split("#")[0];
+      this.$request({
+        url: "/user/getWxConfigInfo",
+        params: {
+          url: url
+        }
+      }).then(({ object }) => {
         this.getLocation(object);
       });
-
-      console.log('router', url)
     },
     // 详情跳转
     goDetail(url) {
@@ -186,13 +184,15 @@ export default {
         timestamp: object.timestamp, // 必填，生成签名的时间戳
         nonceStr: object.nonceStr, // 必填，生成签名的随机串
         signature: object.signature, // 必填，签名
-        jsApiList: ['checkJsApi', 'openLocation', 'getLocation'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        jsApiList: ["checkJsApi", "openLocation", "getLocation"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
       });
       wx.checkJsApi({
-        jsApiList: ['getLocation'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+        jsApiList: ["getLocation"], // 需要检测的JS接口列表，所有JS接口列表见附录2,
         success: function(res) {
           if (res.checkResult.getLocation === false) {
-            alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+            alert(
+              "你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！"
+            );
             return;
           }
         }
@@ -201,7 +201,7 @@ export default {
       var longitude;
       var speed;
       var accuracy;
-      wx.ready(function(){
+      wx.ready(function() {
         // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
         wx.getLocation({
           success: function(res) {
@@ -214,7 +214,7 @@ export default {
             _this.getlist({ lat: latitude, lng: longitude });
           },
           cancel: function(res) {
-            alert('未能获取地理位置');
+            alert("未能获取地理位置");
           }
         });
       });
@@ -225,16 +225,16 @@ export default {
 
       setTimeout(() => {
         this.getlist();
-      }, 100)
+      }, 100);
     },
     // 获取数据列表
     getlist() {
       this.$request({
-        url: `/store/storeList?lng=120.457587&lat=36.119269&orderBy=distance&openid=ASD123456&oilNum=92&page=${this.params.page}`
+        url: `/store/storeList?lng=120.457587&lat=36.119269&orderBy=distance&openid=ASD123456&oilNum=${this.params.oilNum}&page=${this.params.page}`
       }).then((data) => {
-      //  this.list = data.object;
-        this.list.push(...data.object)
-        console.log("data-------", data);
+        if(data.success === true){
+          this.list.push(...data.object);
+        }
       });
     }
   }
@@ -262,9 +262,8 @@ export default {
   font-size: 20px;
 }
 .tag {
+  border-radius: 4px;
   background: red;
-  padding: 1px;
-  display: inline-block;
+  padding: 0;
 }
 </style>
-

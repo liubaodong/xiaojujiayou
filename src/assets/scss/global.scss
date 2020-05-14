@@ -9,3 +9,8 @@ i{
 .primary{
   color:#D6C386;
 }
+.text-ell{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
