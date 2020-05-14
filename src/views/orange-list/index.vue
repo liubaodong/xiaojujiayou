@@ -122,10 +122,9 @@ export default {
   computed: {},
   watch: {},
   created() {
-    this.getPositionParams();
   },
   mounted() {
-
+    this.getPositionParams();
   },
   methods: {
     // 返回
@@ -161,9 +160,9 @@ export default {
 
     // 获取地理位置参数
     getPositionParams() {
-      let url = window.location.href
+      // let url = window.location.href
       //  url = url.replace('http://localhost:8081', 'http://xiaoju.yahewo.com')
-      url = window.location.href.split('#')[0]
+      const url = window.location.href.split('#')[0] + '/api'
       this.$request({ url: "/user/getWxConfigInfo", params: {
         url: url
       }}).then(({ object }) => {
