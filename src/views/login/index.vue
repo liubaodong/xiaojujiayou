@@ -15,10 +15,10 @@
       />
       <div style="margin: 16px;">
         <van-button
+          class="btn"
           round
           block
           type="primary"
-          size="small"
           native-type="submit"
         >
           确定
@@ -68,6 +68,9 @@ export default {
   position: relative;
   .form {
     margin-top: 200px;
+  }
+  .btn{
+    margin-top: 24px;
   }
 }
 </style>

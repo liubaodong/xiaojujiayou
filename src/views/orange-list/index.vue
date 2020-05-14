@@ -31,12 +31,11 @@
         @load="onLoad"
       >
         <van-cell v-for="(item, i) in list" :key="i">
-          <van-row type="felx" align="center">
+          <van-row type="felx" align="center" @click.native="goLocation(item.jumpUrl)">
             <van-col span="6" style="padding:6px">
               <img
                 style="width:100%"
                 :src="item.storeLogo"
-                @click="goDetail(item.jumpUrl)"
               >
             </van-col>
             <van-col span="18">
@@ -72,8 +71,8 @@
               <svg-icon icon-class="position" />
               {{ item.storeAddress }}
             </van-col>
-            <van-col span="5">
-              <van-button round class="button" type="primary" size="small" @click="goLocation(item.jumpUrl)">
+            <van-col v-if="false" span="5">
+              <van-button round class="button" type="primary" size="small" @click.native="goLocation(item.jumpUrl)">
                 <svg-icon icon-class="location" />
                 导航
               </van-button>
@@ -213,9 +212,9 @@ export default {
             longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
             speed = res.speed; // 速度，以米/每秒计
             accuracy = res.accuracy; // 位置精度
-            alert(latitude);
-            alert(accuracy);
-            _this.getlist({ lat: latitude, lng: longitude });
+            // alert(latitude);
+            // alert(accuracy);
+            _this.getlist({ latitude, longitude });
           },
           cancel: function(res) {
             alert("未能获取地理位置");
@@ -232,16 +231,19 @@ export default {
       }, 100);
     },
     // 获取数据列表
-    getlist({ lat, lng }) {
+    getlist(data) {
+      const lng = '120.457587'
+      const lat = '36.119269'
       this.$request({
-        url: `/store/storeList?lng=${lng}&lat=${lat}&orderBy=distance&openid=${this.$store.state.params.openid}&oilNum=${this.params.oilNum}&page=${this.params.page}`
+        url: `/store/storeList?lng=${data.longitude}&lat=${data.latitude}&orderBy=distance&openid=${this.$store.state.params.openid}&oilNum=${this.params.oilNum}&page=${this.params.page}`
       }).then((data) => {
-        console.log('data-----------', data)
-        if(data.success === true){
+        // this.list.push(...data.object);
+        if(data.status === 'success'){
           this.list.push(...data.object);
         }
       });
     }
+
   }
 };
 </script>
