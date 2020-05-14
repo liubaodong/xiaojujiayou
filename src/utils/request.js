@@ -5,8 +5,9 @@ import axios from 'axios'
 // const $500 = 500
 // const $502 = 502
 const isTest = true
-const baseURL = 'http://59.110.22.161:8081'
+// const baseURL = 'http://59.110.22.161:8081'
 // const baseURL = 'http://localhost:8081/api'
+const baseURL = 'http://xiaoju.yahewo.com'
 
 // 创建 axios 实例
 const instance = axios.create({
