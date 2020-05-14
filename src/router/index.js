@@ -8,16 +8,20 @@ const OrangeListDetail = () => import('@/views/orange-list/list-detail')
 
 const routes = [{
   path: '/',
-  name: 'login',
-  component: Login,
+  redirect: "/app",
   children: [
 
   ]
 },
 {
+  path: '/app',
+  component: Login
+},
+{
   path: '/orange-list',
   component: OrangeList,
   children: [
+
   ]
 },
 {
@@ -33,7 +37,7 @@ const routes = [{
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes
 })

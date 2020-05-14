@@ -39,7 +39,7 @@ export default {
 
   },
   created(){
-    if(this.$router.query.openid){
+    if(this.$router.query && this.$router.query.openid){
       this.openId = this.$router.query.openid
       this.$store.commit(this.openId)
     }
