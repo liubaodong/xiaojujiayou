@@ -5,6 +5,7 @@ Vue.use(VueRouter)
 const Login = () => import('@/views/login')
 const OrangeList = () => import('@/views/orange-list')
 const OrangeListDetail = () => import('@/views/orange-list/list-detail')
+const OrangeListOrderDetail = () => import('@/views/orange-list/order-detail')
 
 const routes = [
   {
@@ -28,6 +29,10 @@ const routes = [
   {
     path: '/orange-list/detail',
     component: OrangeListDetail
+  },
+  {
+    path: '/orange-list/order-detail',
+    component: OrangeListOrderDetail
   },
   // 重定向路由
   {

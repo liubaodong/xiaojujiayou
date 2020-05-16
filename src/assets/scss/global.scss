@@ -1,16 +1,26 @@
 @import './reset';
+
 // 自定义样式
-i{
+i {
   font-size: 16px !important;
 }
-.t-a-c{
+
+.t-a-c {
   text-align: center;
 }
-.primary{
-  color:#D6C386;
+
+.primary {
+  color: #D6C386;
 }
-.text-ell{
+
+.text-ell {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.sub_tit {
+  color: #8D8D8D;
+  font-size: 14px;
+  line-height: 20px;
 }

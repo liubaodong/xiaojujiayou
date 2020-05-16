@@ -2,9 +2,7 @@
   <div>
     <x-header class="title">
       <van-row type="flex" align="center" justify="center">
-        <van-col
-          span="1"
-        />
+        <van-col span="1" />
         <van-col span="23">全国加油优惠</van-col>
       </van-row>
     </x-header>
@@ -12,18 +10,18 @@
       <van-dropdown-item
         v-model="value1"
         :options="option1"
-        @change="changeSelect"
+        @change="changeSelect1"
       />
       <van-dropdown-item
         v-model="value2"
         :options="option2"
-        @change="changeSelect"
+        @change="changeSelect2"
       />
     </van-dropdown-menu>
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
       <van-list
         v-model="loading"
-        :offset="0"
+        :offset="100"
         :immediate-check="false"
         class="list"
         :finished="finished"
@@ -32,12 +30,13 @@
         @load="onLoad"
       >
         <van-cell v-for="(item, i) in list" :key="i">
-          <van-row type="felx" align="center" @click.native="goLocation(item.jumpUrl)">
+          <van-row
+            type="felx"
+            align="center"
+            @click.native="goLocation(item.jumpUrl)"
+          >
             <van-col span="6" style="padding:6px">
-              <img
-                style="width:100%"
-                :src="item.storeLogo"
-              >
+              <img style="width:100%" :src="item.storeLogo">
             </van-col>
             <van-col span="18">
               <van-row>
@@ -48,10 +47,10 @@
                   class="tit"
                   span="14"
                 >￥
-                  <strong class="money">{{ item.vipPrice /100 }}</strong>
+                  <strong class="money">{{ item.vipPrice / 100 }}</strong>
                   /升/{{ params.oilNum }}#</van-col>
                 <van-col span="10" class="sub_tit">
-                  距您 {{ (item.distance / 1000).toFixed(2) }}  km
+                  距您 {{ (item.distance / 1000).toFixed(2) }} km
                 </van-col>
               </van-row>
               <van-row style="margin-top:6px">
@@ -61,7 +60,7 @@
                     plain
                     style="font-size:12px"
                     type="danger"
-                  >已降{{ (item.cityPrice-item.vipPrice)/100 }}</van-tag>
+                  >已降{{ (item.cityPrice - item.vipPrice) / 100 }}</van-tag>
                 </van-tag>
               </van-row>
             </van-col>
@@ -73,7 +72,13 @@
               {{ item.storeAddress }}
             </van-col>
             <van-col v-if="false" span="5">
-              <van-button round class="button" type="primary" size="small" @click.native="goLocation(item.jumpUrl)">
+              <van-button
+                round
+                class="button"
+                type="primary"
+                size="small"
+                @click.native="goLocation(item.jumpUrl)"
+              >
                 <svg-icon icon-class="location" />
                 导航
               </van-button>
@@ -86,7 +91,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
   name: "OrangeListIndex",
   components: {},
@@ -95,7 +100,9 @@ export default {
     return {
       params: {
         page: 1,
-        oilNum: 92
+        oilNum: 92,
+        pageSize: 10,
+        orderBy: 'distance'
       },
       list: [],
       loading: false,
@@ -103,96 +110,65 @@ export default {
       refreshing: false,
       location: "",
 
-      value1: 0,
-      value2: "92",
-      option1: [
-        { text: "距离最近", value: 0 }
-      ],
+      value1: 'distance',
+      value2: 92,
+      option1: [{ text: "距离最近", value: 'distance' }],
       option2: [
-        { text: "92号油", value: "92" },
-        { text: "95号油", value: "95" },
-        { text: "0号油", value: "0" },
-        { text: "98号油", value: "98" }
+        { text: "92号油", value: 92 },
+        { text: "95号油", value: 95 },
+        { text: "0号油", value: 0 },
+        { text: "98号油", value: 98 }
       ],
-      lat: '',
-      lng: ''
+      lat: "",
+      lng: ""
     };
   },
-  computed: {
-
-  },
+  computed: {},
   watch: {},
-  created() {},
-  mounted() {
-    console.log('params', this.$store.state.params.openid)
+  created() {
+    this.loading = true
     this.getPositionParams();
+    console.log("params", this.$store.state.params.openid);
+  },
+  mounted() {
   },
   methods: {
     // 导航
-    goLocation(url){
-      if(url){
-        window.location.href = url
+    goLocation(url) {
+      if (url) {
+        window.location.href = url;
       }
     },
     onLoad() {
-      const _this = this
-      const lng = '120.457587'
-      const lat = '36.119269'
-      const openid = 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk'
-      const oilNum = 92
-      setTimeout(() => {
-        _this.$request({
-          url: `/store/storeList?lng=${_this.lng}&lat=${_this.lat}&orderBy=distance&openid=${
-            _this.$store.state.params.openid}&oilNum=${
-            _this.params.oilNum}&page=${_this.params.page}`
-        }).then((data) => {
-          // this.list.push(...data.object);
-          if(data.status === 'success'){
-            _this.list.push(...data.object);
-          } else {
-            _this.$toast("网络开小差了, 请重试~"); // 弹出
-          }
-          _this.loading = false
-          _this.params.page++
-          _this.finished = _this.list.length % 10 !== 0
-          console.log('data', data)
-        });
-      }, 500);
-      console.log(this.params.page)
+      if(this.finished) return
+      this.loading = true
+      this.getlist()
     },
     onRefresh() {
-      const _this = this
-      const lng = '120.457587'
-      const lat = '36.119269'
-      const openid = 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk'
-      const oilNum = 92
+      this.params.page = 1
       this.refreshing = true
       this.loading = true
-      _this.params.page = 1
-      setTimeout(() => {
-        _this.$request({
-          url: `/store/storeList?lng=${_this.lng}&lat=${_this.lat}&orderBy=distance&openid=${
-            _this.$store.state.params.openid}&oilNum=${
-            _this.params.oilNum}&page=${_this.params.page}`
-        }).then((data) => {
-          if(data.status === 'success'){
-            _this.list = data.object
-          } else {
-            _this.$toast("网络开小差了, 请重试~"); // 弹出
-          }
-          _this.refreshing = false
-          _this.loading = false
-          console.log('data', data)
-        });
-      }, 500)
-      console.log(this.params.page)
+      this.list = []
+      this.getlist()
     },
 
-    // 下拉选择
-    changeSelect(e) {
-      this.list = []
+    // 下拉选择距离
+    changeSelect1(e) {
+      this.params.orderBy = e
       this.params.page = 1
+      this.refreshing = true
+      this.loading = true
+      this.list = []
+      this.getlist()
+    },
+
+    // 下拉选择油
+    changeSelect2(e) {
       this.params.oilNum = e
+      this.params.page = 1
+      this.refreshing = true
+      this.loading = true
+      this.list = []
       this.getlist()
     },
 
@@ -242,7 +218,7 @@ export default {
       wx.ready(function() {
         // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
         wx.getLocation({
-          type: 'gcj02',
+          type: "gcj02",
           success: function(res) {
             latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
             longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
@@ -250,9 +226,9 @@ export default {
             accuracy = res.accuracy; // 位置精度
             // alert(latitude);
             // alert(accuracy);
-            _this.lat = latitude
-            _this.lng = longitude
-            _this.getlist({ lat: latitude, lng: longitude });
+            _this.lat = latitude;
+            _this.lng = longitude;
+            _this.getlist();
           },
           cancel: function(res) {
             alert("未能获取地理位置");
@@ -265,32 +241,30 @@ export default {
       });
 
       setTimeout(() => {
-        this.getlist({ lat: _this.lat, lng: _this.lng });
+        this.getlist();
       }, 100);
     },
     // 获取数据列表
-    getlist(data) {
-      const lng = '120.457587'
-      const lat = '36.119269'
-      const openid = 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk'
-      const oilNum = 92
+    getlist() {
+      const lng = "120.457587";
+      const lat = "36.119269";
+      const openid = "oLk8JwGvmfGi0dnO-K9ra6nJPHJk";
       this.$request({
-        url: `/store/storeList?lng=${data.lng}&lat=${data.lat}&orderBy=distance&openid=${this.$store.state.params.openid}&oilNum=${this.params.oilNum}&page=${this.params.page}`
+        url: `/store/storeList?lng=${this.lng || lng}&lat=${this.lat || lat}&orderBy=distance&openid=${
+          this.$store.state.params.openid || openid}&oilNum=${this.params.oilNum}&page=${this.params.page}`
       })
-      // this.$request({
-      //   url: `/store/storeList?lng=${lng}&lat=${lat}&orderBy=distance&openid=${openid}&oilNum=${oilNum}&page=${this.params.page}`
-      // })
         .then((data) => {
-          console.log('data', data)
-          this.list.push(...data.object);
-          if(data.status === 'success'){
-            this.list.push(...data.object);
-          } else {
-            this.$toast("网络开小差了, 请重试~"); // 弹出
-          }
-        });
+          this.finished = data.object.length < this.params.pageSize
+          this.loading = false
+          this.refreshing = false
+          this.pageSize++
+          this.list.push(...data.object)
+          console.log('data====', data)
+        })
+        .catch(() => {
+          this.$toast("网络开小差了, 请重试~"); // 弹出
+        })
     }
-
   }
 };
 </script>
