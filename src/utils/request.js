@@ -13,7 +13,7 @@ const baseURL = 'http://xiaoju.yahewo.com/api'
 const instance = axios.create({
   // baseURL: process.env.VUE_APP_API, // 基础url,如果是多环境配置这样写，也可以像下面一行的写死。
   baseURL,
-  timeout: 6000 // 请求超时时间
+  timeout: 10000 // 请求超时时间
 });
 // 同一错误处理
 const errorData = ({ err = '', cb }) => {

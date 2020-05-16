@@ -19,15 +19,16 @@
         :options="option2"
         @change="changeSelect"
       />
-      <van-pull-refresh v-model="refreshing" @refresh="onRefresh" />
     </van-dropdown-menu>
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
       <van-list
         v-model="loading"
+        :offset="0"
+        :immediate-check="false"
         class="list"
         :finished="finished"
-        finished-text="没有更多了"
-        error-text="请求失败，点击重新加载"
+        finished-text="没有更多了~"
+        error-text="请求失败"
         @load="onLoad"
       >
         <van-cell v-for="(item, i) in list" :key="i">
@@ -96,10 +97,10 @@ export default {
         page: 1,
         oilNum: 92
       },
+      list: [],
       loading: false,
       finished: false,
       refreshing: false,
-      list: [],
       location: "",
 
       value1: 0,
@@ -112,7 +113,9 @@ export default {
         { text: "95号油", value: "95" },
         { text: "0号油", value: "0" },
         { text: "98号油", value: "98" }
-      ]
+      ],
+      lat: '',
+      lng: ''
     };
   },
   computed: {
@@ -132,27 +135,59 @@ export default {
       }
     },
     onLoad() {
+      const _this = this
+      const lng = '120.457587'
+      const lat = '36.119269'
+      const openid = 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk'
+      const oilNum = 92
       setTimeout(() => {
-        this.params.page++;
-        if (this.refreshing) {
-          this.list = [];
-          this.refreshing = false;
-        }
-        this.getlist();
-        this.loading = false;
-
-        this.finished = this.list.length % 10 !== 0 || !this.list.length
-      }, 1000);
+        _this.$request({
+          url: `/store/storeList?lng=${_this.lng}&lat=${_this.lat}&orderBy=distance&openid=${
+            _this.$store.state.params.openid}&oilNum=${
+            _this.params.oilNum}&page=${_this.params.page}`
+        }).then((data) => {
+          // this.list.push(...data.object);
+          if(data.status === 'success'){
+            _this.list.push(...data.object);
+          } else {
+            _this.$toast("网络开小差了, 请重试~"); // 弹出
+          }
+          _this.loading = false
+          _this.params.page++
+          _this.finished = _this.list.length % 10 !== 0
+          console.log('data', data)
+        });
+      }, 500);
+      console.log(this.params.page)
     },
     onRefresh() {
-      // 清空列表数据
-      this.finished = false;
-
-      // 重新加载数据
-      // 将 loading 设置为 true，表示处于加载状态
-      this.loading = true;
-      this.onLoad();
+      const _this = this
+      const lng = '120.457587'
+      const lat = '36.119269'
+      const openid = 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk'
+      const oilNum = 92
+      this.refreshing = true
+      this.loading = true
+      _this.params.page = 1
+      setTimeout(() => {
+        _this.$request({
+          url: `/store/storeList?lng=${_this.lng}&lat=${_this.lat}&orderBy=distance&openid=${
+            _this.$store.state.params.openid}&oilNum=${
+            _this.params.oilNum}&page=${_this.params.page}`
+        }).then((data) => {
+          if(data.status === 'success'){
+            _this.list = data.object
+          } else {
+            _this.$toast("网络开小差了, 请重试~"); // 弹出
+          }
+          _this.refreshing = false
+          _this.loading = false
+          console.log('data', data)
+        });
+      }, 500)
+      console.log(this.params.page)
     },
+
     // 下拉选择
     changeSelect(e) {
       this.list = []
@@ -207,6 +242,7 @@ export default {
       wx.ready(function() {
         // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
         wx.getLocation({
+          type: 'gcj02',
           success: function(res) {
             latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
             longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
@@ -214,7 +250,9 @@ export default {
             accuracy = res.accuracy; // 位置精度
             // alert(latitude);
             // alert(accuracy);
-            _this.getlist({ latitude, longitude });
+            _this.lat = latitude
+            _this.lng = longitude
+            _this.getlist({ lat: latitude, lng: longitude });
           },
           cancel: function(res) {
             alert("未能获取地理位置");
@@ -227,21 +265,30 @@ export default {
       });
 
       setTimeout(() => {
-        this.getlist();
+        this.getlist({ lat: _this.lat, lng: _this.lng });
       }, 100);
     },
     // 获取数据列表
     getlist(data) {
       const lng = '120.457587'
       const lat = '36.119269'
+      const openid = 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk'
+      const oilNum = 92
       this.$request({
-        url: `/store/storeList?lng=${data.longitude}&lat=${data.latitude}&orderBy=distance&openid=${this.$store.state.params.openid}&oilNum=${this.params.oilNum}&page=${this.params.page}`
-      }).then((data) => {
-        // this.list.push(...data.object);
-        if(data.status === 'success'){
+        url: `/store/storeList?lng=${data.lng}&lat=${data.lat}&orderBy=distance&openid=${this.$store.state.params.openid}&oilNum=${this.params.oilNum}&page=${this.params.page}`
+      })
+      // this.$request({
+      //   url: `/store/storeList?lng=${lng}&lat=${lat}&orderBy=distance&openid=${openid}&oilNum=${oilNum}&page=${this.params.page}`
+      // })
+        .then((data) => {
+          console.log('data', data)
           this.list.push(...data.object);
-        }
-      });
+          if(data.status === 'success'){
+            this.list.push(...data.object);
+          } else {
+            this.$toast("网络开小差了, 请重试~"); // 弹出
+          }
+        });
     }
 
   }

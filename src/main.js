@@ -16,6 +16,8 @@ import '@/utils'
 import instance from '@/utils/request'
 import axios from 'axios'
 import wx from 'weixin-jsapi'
+import Mock from 'mockjs'
+
 Vue.prototype.$request = instance
 Vue.prototype.$axios = axios
 Vue.prototype.$wx = wx

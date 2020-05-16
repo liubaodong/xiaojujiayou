@@ -6,34 +6,34 @@ const Login = () => import('@/views/login')
 const OrangeList = () => import('@/views/orange-list')
 const OrangeListDetail = () => import('@/views/orange-list/list-detail')
 
-const routes = [{
-  path: '/',
-  redirect: "/app",
-  children: [
+const routes = [
+  {
+    path: '/',
+    redirect: "/app",
+    children: [
 
-  ]
-},
-{
-  path: '/app',
-  component: Login
-},
-{
-  path: '/orange-list',
-  component: OrangeList,
-  children: [
+    ]
+  },
+  {
+    path: '/app',
+    component: Login
+  },
+  {
+    path: '/orange-list',
+    component: OrangeList,
+    children: [
 
-  ]
-},
-{
-  path: '/orange-list/detail',
-  component: OrangeListDetail
-},
-// 重定向路由
-{
-  path: '*',
-  redirectTo: '/'
-}
-
+    ]
+  },
+  {
+    path: '/orange-list/detail',
+    component: OrangeListDetail
+  },
+  // 重定向路由
+  {
+    path: '*',
+    redirectTo: '/'
+  }
 ]
 
 const router = new VueRouter({

@@ -35,28 +35,28 @@ export default {
   props: {},
   data() {
     return {
-      phone: '',
+      phone: "",
       openId: ""
     };
   },
   computed: {},
   watch: {},
   created() {
-    if (this.$route.query && this.$route.query.openid) {
-      this.openId = this.$route.query.openid;
-      console.log('openid', this.openId)
-    }
+    this.phone = this.$route.query.phone
+    this.openid = this.$route.query.openid
   },
   mounted() {},
   methods: {
     onSubmit(values) {
-      console.log("submit", values);
-      this.$store.commit('getParams', { openid: this.$route.query.openid || 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk', phone: values.phone });
+      this.phone = values.phone
+      const openid = 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk'
+      this.$store.commit('getParams', { openid: this.openid, phone: this.phone });
       this.$request({ url: `/user/bindPhone`, params: {
-        openid: this.$route.query.openid || 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk',
-        phone: values.phone
+        openid: this.openid,
+        phone: this.phone
       }})
         .then(data => {
+          alert('data', data)
           this.$router.replace({ path: "/orange-list" });
         })
     }
