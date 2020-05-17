@@ -254,15 +254,22 @@ export default {
           this.$store.state.params.openid || openid}&oilNum=${this.params.oilNum}&page=${this.params.page}`
       })
         .then((data) => {
-          this.finished = data.object.length < this.params.pageSize
-          this.loading = false
-          this.refreshing = false
-          this.pageSize++
-          this.list.push(...data.object)
+          if(data.status === 'success'){
+            this.finished = data.object.length < this.params.pageSize
+            this.loading = false
+            this.refreshing = false
+            this.pageSize++
+            this.list.push(...data.object)
+          } else {
+            this.finished = true
+            this.list = []
+            this.$toast(`${data.object}`); // 弹出
+          }
           console.log('data====', data)
         })
-        .catch(() => {
-          this.$toast("网络开小差了, 请重试~"); // 弹出
+        .catch(err => {
+          console.log('catch====', err)
+          this.$toast(`${err.object}`); // 弹出
         })
     }
   }

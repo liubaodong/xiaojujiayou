@@ -83,16 +83,19 @@ export default {
     getList() {
       this.$request({ url: "order/orderList", params: { ...this.params }})
         .then((data) => {
-          this.loading = false
-          this.refreshing = false
-          this.params.page++
-          this.finished = data.object.records < this.params.pageSize
-          this.orderList.push(...data.object.records)
-          console.log("data--", this.orderList);
+          if(data.status === 'success'){
+            this.loading = false
+            this.refreshing = false
+            this.params.page++
+            this.finished = data.object.records < this.params.pageSize
+            this.orderList.push(...data.object.records)
+          } else {
+            this.finished = true
+            this.orderList = []
+            this.$toast(`${data.object}`); // 弹出
+          }
+          console.log("data--", data);
         })
-        .catch(() => {
-          this.$toast("网络开小差了, 请重试~"); // 弹出
-        });
     },
     onRefresh() {
       this.refreshing = true;
