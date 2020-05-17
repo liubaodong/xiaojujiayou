@@ -40,7 +40,7 @@ export default {
   watch: {},
   created() {
     this.phone = this.$route.query.phone !== 'null' ? this.$route.query.phone : ''
-    this.openid = this.$route.query.openid ? this.$route.query.phone : 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk';
+    this.openid = this.$route.query.openid ? this.$route.query.openid : 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk';
   },
   mounted() {},
   methods: {
