@@ -39,10 +39,8 @@ export default {
   computed: {},
   watch: {},
   created() {
+    this.phone = this.$route.query.phone !== 'null' ? this.$route.query.phone : ''
     this.openid = this.$route.query.openid ? this.$route.query.phone : 'oLk8JwGvmfGi0dnO-K9ra6nJPHJk';
-    if(this.$route.query.phone){
-      this.phone = this.$route.query.phone
-    }
   },
   mounted() {},
   methods: {
