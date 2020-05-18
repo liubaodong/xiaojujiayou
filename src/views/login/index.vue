@@ -58,7 +58,11 @@ export default {
           phone: this.phone
         }
       }).then((data) => {
-        this.$router.replace({ path: "/orange-list" });
+        if(data.status !== 'success'){
+          this.$toast(`${data.object}`); // 弹出
+        } else {
+          this.$router.replace({ path: "/orange-list" });
+        }
       });
     },
     // 我的订单

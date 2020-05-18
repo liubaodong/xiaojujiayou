@@ -30,10 +30,10 @@
         @load="onLoad"
       >
         <van-cell v-for="(item, i) in list" :key="i">
+          <!--  @click.native="goLocation(item.jumpUrl)" -->
           <van-row
             type="felx"
             align="center"
-            @click.native="goLocation(item.jumpUrl)"
           >
             <van-col span="6" style="padding:6px">
               <img style="width:100%" :src="item.storeLogo">
@@ -71,13 +71,13 @@
               <svg-icon icon-class="position" />
               {{ item.storeAddress }}
             </van-col>
-            <van-col v-if="false" span="5">
+            <van-col span="5">
               <van-button
                 round
                 class="button"
                 type="primary"
                 size="small"
-                @click.native="goLocation(item.jumpUrl)"
+                @click.native="goLocation(item)"
               >
                 <svg-icon icon-class="location" />
                 导航
@@ -128,21 +128,30 @@ export default {
   created() {
     this.loading = true
     this.getPositionParams();
-    console.log("params", this.$store.state.params.openid);
   },
   mounted() {
   },
   methods: {
     // 导航
-    goLocation(url) {
-      if (url) {
-        window.location.href = url;
-      }
+    goLocation(item) {
+      const wx = this.$wx
+      console.log('item', item)
+      wx.openLocation({
+        latitude: item.storeLat, // 纬度，浮点数，范围为90 ~ -90
+        longitude: item.storeLon, // 经度，浮点数，范围为180 ~ -180。
+        name: item.storeName, // 位置名
+        address: item.storeAddress, // 地址详情说明
+        scale: 1, // 地图缩放级别,整形值,范围从1~28。默认为最大
+        infoUrl: item.jumpUrl // 在查看位置界面底部显示的超链接,可点击跳转
+      });
+    //  window.location.href = item.jumpUrl;
     },
     onLoad() {
       if(this.finished) return
       this.loading = true
+
       this.getlist()
+      console.log('params', this.params.page)
     },
     onRefresh() {
       this.params.page = 1
@@ -150,6 +159,7 @@ export default {
       this.loading = true
       this.list = []
       this.getlist()
+      console.log('params++', this.params.page)
     },
 
     // 下拉选择距离
@@ -228,7 +238,7 @@ export default {
             // alert(accuracy);
             _this.lat = latitude;
             _this.lng = longitude;
-            _this.getlist();
+            // _this.getlist();
           },
           cancel: function(res) {
             alert("未能获取地理位置");
@@ -258,17 +268,15 @@ export default {
             this.finished = data.object.length < this.params.pageSize
             this.loading = false
             this.refreshing = false
-            this.pageSize++
             this.list.push(...data.object)
+            this.params.page++
           } else {
             this.finished = true
             this.list = []
             this.$toast(`${data.object}`); // 弹出
           }
-          console.log('data====', data)
         })
         .catch(err => {
-          console.log('catch====', err)
           this.$toast(`${err.object}`); // 弹出
         })
     }

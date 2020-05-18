@@ -86,7 +86,6 @@ export default {
           if(data.status === 'success'){
             this.loading = false
             this.refreshing = false
-            this.params.page++
             this.finished = data.object.records < this.params.pageSize
             this.orderList.push(...data.object.records)
           } else {
@@ -94,7 +93,6 @@ export default {
             this.orderList = []
             this.$toast(`${data.object}`); // 弹出
           }
-          console.log("data--", data);
         })
     },
     onRefresh() {
@@ -106,6 +104,7 @@ export default {
     },
     onLoad() {
       if(this.finished) return
+      this.params.page++
       this.loading = true;
       this.getList()
     },
@@ -115,7 +114,6 @@ export default {
         path: '/orange-list/order-detail',
         query: { ...item }
       })
-      console.log('item', item)
     }
   }
 };
