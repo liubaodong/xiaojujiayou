@@ -88,6 +88,7 @@ export default {
             this.refreshing = false
             this.finished = data.object.records < this.params.pageSize
             this.orderList.push(...data.object.records)
+            this.params.page++
           } else {
             this.finished = true
             this.orderList = []
@@ -104,7 +105,6 @@ export default {
     },
     onLoad() {
       if(this.finished) return
-      this.params.page++
       this.loading = true;
       this.getList()
     },
