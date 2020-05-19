@@ -30,10 +30,11 @@
         @load="onLoad"
       >
         <van-cell v-for="(item, i) in list" :key="i">
-          <!--  @click.native="goLocation(item.jumpUrl)" -->
+          <!--  -->
           <van-row
             type="felx"
             align="center"
+            @click.native="openDetail(item.jumpUrl)"
           >
             <van-col span="6" style="padding:6px">
               <img style="width:100%" :src="item.storeLogo">
@@ -123,15 +124,23 @@ export default {
       lng: ""
     };
   },
-  computed: {},
+  computed: {
+  },
   watch: {},
   created() {
+    console.log('vux', this.$store.state.params.openid)
+    console.log('openid', localStorage.getItem('openid'))
     this.loading = true
     this.getPositionParams();
   },
   mounted() {
   },
   methods: {
+    // 详情
+    openDetail(url){
+      console.log('url', url)
+      location.href = url
+    },
     // 导航
     goLocation(item) {
       const wx = this.$wx
@@ -141,7 +150,7 @@ export default {
         longitude: item.storeLon, // 经度，浮点数，范围为180 ~ -180。
         name: item.storeName, // 位置名
         address: item.storeAddress, // 地址详情说明
-        scale: 1, // 地图缩放级别,整形值,范围从1~28。默认为最大
+        scale: 18, // 地图缩放级别,整形值,范围从1~28。默认为最大
         infoUrl: item.jumpUrl // 在查看位置界面底部显示的超链接,可点击跳转
       });
     //  window.location.href = item.jumpUrl;
@@ -202,6 +211,8 @@ export default {
     getLocation(object) {
       const _this = this;
       const wx = this.$wx;
+      console.log('object', object)
+
       wx.config({
         debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
         appId: object.appId, // 必填，公众号的唯一标识
@@ -238,7 +249,8 @@ export default {
             // alert(accuracy);
             _this.lat = latitude;
             _this.lng = longitude;
-            // _this.getlist();
+            _this.getlist();
+            _this.$store.commit('getParams', { lat: latitude, lng: longitude })
           },
           cancel: function(res) {
             alert("未能获取地理位置");
@@ -250,18 +262,18 @@ export default {
         alert("验证出错");
       });
 
-      setTimeout(() => {
-        this.getlist();
-      }, 100);
+      // setTimeout(() => {
+      //   this.getlist();
+      // }, 100);
     },
     // 获取数据列表
     getlist() {
-      const lng = "120.457587";
-      const lat = "36.119269";
-      const openid = "oLk8JwGvmfGi0dnO-K9ra6nJPHJk";
+      // const lng = "120.457587";
+      // const lat = "36.119269";
+      // const openid = "oLk8JwGvmfGi0dnO-K9ra6nJPHJk";
       this.$request({
-        url: `/store/storeList?lng=${this.lng || lng}&lat=${this.lat || lat}&orderBy=distance&openid=${
-          this.$store.state.params.openid || openid}&oilNum=${this.params.oilNum}&page=${this.params.page}`
+        url: `/store/storeList?lng=${this.lng}&lat=${this.lat}&orderBy=distance&openid=${
+          localStorage.getItem('openid')}&oilNum=${this.params.oilNum}&page=${this.params.page}`
       })
         .then((data) => {
           if(data.status === 'success'){

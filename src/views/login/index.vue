@@ -61,7 +61,10 @@ export default {
         if(data.status !== 'success'){
           this.$toast(`${data.object}`); // 弹出
         } else {
-          this.$router.replace({ path: "/orange-list" });
+          localStorage.setItem('openid', this.openid)
+          this.$router.replace({ path: "/orange-list", query: {
+            openid: this.openid
+          }});
         }
       });
     },
