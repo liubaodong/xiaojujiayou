@@ -61,7 +61,7 @@
                     plain
                     style="font-size:12px"
                     type="danger"
-                  >已降{{ (item.cityPrice - item.vipPrice) / 100 }}</van-tag>
+                  >已降{{ (item.storePrice - item.vipPrice) / 100 }}</van-tag>
                 </van-tag>
               </van-row>
             </van-col>
